@@ -75,12 +75,12 @@ const themes: Record<Theme, ThemeConfig> = {
   },
   blue: {
     background: 'linear-gradient(135deg, #AEC6E4 0%, #8BB8E8 50%, #6A8CD2 100%)',
-    primary: '#4A69BB',
-    secondary: '#667EEA',
+    primary: '#667EEA',
+    secondary: '#764BA2',
     text: '#2D3748',
     cardBg: 'rgba(255, 255, 255, 0.95)',
-    border: 'rgba(74, 105, 187, 0.1)',
-    shadow: 'rgba(74, 105, 187, 0.08)',
+    border: 'rgba(102, 126, 234, 0.1)',
+    shadow: 'rgba(102, 126, 234, 0.08)',
     accent: '#667EEA',
     sidebarBg: 'linear-gradient(180deg, #AEC6E4 0%, #8BB8E8 100%)',
     sidebarHeader: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)'
