@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
-import { toast } from 'react-toastify';
+import ErrorModal from './ErrorModal';
+import { parseAuthError, ParsedError } from '../utils/errorParser';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -107,6 +108,7 @@ const Login: React.FC = () => {
     password: ''
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<ParsedError | null>(null);
   const { login, register } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,25 +121,37 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       if (isRegister) {
         await register(formData.name, formData.email, formData.password);
-        toast.success('Account created successfully!');
+        // Success - no need for toast, user will see dashboard
       } else {
         await login(formData.email, formData.password);
-        toast.success('Welcome back!');
+        // Success - no need for toast, user will see dashboard
       }
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (authError: any) {
+      const parsedError = parseAuthError(authError);
+      setError(parsedError);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleRetry = () => {
+    setError(null);
+    handleSubmit(new Event('submit') as any);
+  };
+
+  const handleCloseError = () => {
+    setError(null);
+  };
+
   const toggleMode = () => {
     setIsRegister(!isRegister);
     setFormData({ name: '', email: '', password: '' });
+    setError(null);
   };
 
   return (
@@ -202,6 +216,15 @@ const Login: React.FC = () => {
           </span>
         </ToggleText>
       </Card>
+
+      {error && (
+        <ErrorModal
+          isOpen={true}
+          error={error}
+          onClose={handleCloseError}
+          onRetry={handleRetry}
+        />
+      )}
     </Container>
   );
 };

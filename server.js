@@ -44,6 +44,8 @@ connectDB();
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/entries', require('./routes/entries'));
+app.use('/api/affirmations', require('./routes/affirmations'));
+app.use('/api/moods', require('./routes/moods'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
