@@ -32,12 +32,34 @@ app.use('/api/entries', require('./routes/entries'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));
+  const buildPath = path.join(__dirname, 'client/build');
+  const indexPath = path.join(buildPath, 'index.html');
   
-  // Handle React routing, return all requests to React app
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  });
+  // Check if build files exist
+  const fs = require('fs');
+  if (fs.existsSync(buildPath) && fs.existsSync(indexPath)) {
+    app.use(express.static(buildPath));
+    
+    // Handle React routing, return all requests to React app
+    app.get('*', (req, res) => {
+      res.sendFile(indexPath);
+    });
+  } else {
+    // Fallback if build files don't exist
+    app.get('*', (req, res) => {
+      res.json({ 
+        error: 'Frontend build not found',
+        message: 'Joy Dairy API Server is running, but frontend build is missing', 
+        version: '1.0.0',
+        endpoints: {
+          auth: '/api/auth',
+          entries: '/api/entries'
+        },
+        buildPath: buildPath,
+        buildExists: fs.existsSync(buildPath)
+      });
+    });
+  }
 } else {
   app.get('/', (req, res) => {
     res.json({ 
