@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -30,14 +29,18 @@ connectDB();
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/entries', require('./routes/entries'));
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));
-  
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+// API-only backend - no static file serving
+// Frontend will be deployed separately (GitHub Pages, Vercel, etc.)
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Joy Dairy API Server is running!', 
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      entries: '/api/entries'
+    }
   });
-}
+});
 
 const PORT = process.env.PORT || 5000;
 
