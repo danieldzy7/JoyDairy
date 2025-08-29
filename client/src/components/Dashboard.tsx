@@ -229,14 +229,6 @@ const EntrySection = styled.div`
 
 
 
-const SelectedDate = styled.p`
-  text-align: center;
-  color: #667eea;
-  font-weight: 600;
-  margin-bottom: 25px;
-  font-size: 1.1rem;
-`;
-
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -247,12 +239,6 @@ const FieldGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-`;
-
-const Label = styled.label`
-  color: #555;
-  font-weight: 600;
-  font-size: 1rem;
 `;
 
 const TextArea = styled.textarea`
@@ -468,18 +454,8 @@ const Dashboard: React.FC = () => {
       </CalendarContainer>
 
       <EntrySection>
-        <SelectedDate>
-          {selectedDate.toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </SelectedDate>
-
         <Form onSubmit={handleSubmit}>
           <FieldGroup>
-            <Label htmlFor="goodThings">What three good things happened today?</Label>
             <TextArea
               id="goodThings"
               name="goodThings"
