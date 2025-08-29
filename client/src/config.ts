@@ -7,7 +7,7 @@ export const API_CONFIG = {
   
   // Production - Same domain (frontend and backend served together)
   production: {
-    baseURL: '' // Empty string means same domain
+    baseURL: window.location.origin // Use the current domain explicitly
   }
 };
 

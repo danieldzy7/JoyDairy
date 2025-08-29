@@ -12,20 +12,41 @@ export const parseAuthError = (error: any): ParsedError => {
   const statusCode = error.response?.status;
   const responseData = error.response?.data;
 
-  // Network errors
-  if (error.code === 'NETWORK_ERROR' || statusCode === 0 || !statusCode) {
+  // Enhanced network error detection
+  if (error.code === 'NETWORK_ERROR' || 
+      statusCode === 0 || 
+      !statusCode || 
+      error.message?.includes('Network Error') ||
+      error.message?.includes('Failed to fetch') ||
+      error.message?.includes('ERR_NETWORK')) {
+    
+    // Check if it's a mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    const mobileSuggestions = [
+      'Check your mobile data or Wi-Fi connection',
+      'Try switching between Wi-Fi and mobile data',
+      'Close and reopen the app/browser',
+      'Clear your browser cache and cookies',
+      'Make sure you\'re not in airplane mode',
+      'Try accessing from a different network'
+    ];
+    
+    const desktopSuggestions = [
+      'Check your internet connection',
+      'Try switching between Wi-Fi and mobile data',
+      'Make sure you\'re not behind a firewall',
+      'Wait a moment and try again',
+      'Clear your browser cache and cookies'
+    ];
+    
     return {
       type: 'network',
       title: 'Connection Problem',
       message: 'Unable to connect to Joy Dairy servers',
       code: 'NETWORK_ERROR',
-      suggestions: [
-        'Check your internet connection',
-        'Try switching between Wi-Fi and mobile data',
-        'Make sure you\'re not behind a firewall',
-        'Wait a moment and try again'
-      ],
-      details: 'The app cannot reach our servers. This might be due to network connectivity issues.'
+      suggestions: isMobile ? mobileSuggestions : desktopSuggestions,
+      details: `The app cannot reach our servers. This might be due to network connectivity issues. ${isMobile ? 'Mobile devices sometimes have different network restrictions.' : ''}`
     };
   }
 

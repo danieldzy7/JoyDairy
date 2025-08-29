@@ -19,6 +19,7 @@ const StatusBar = styled.div<{ isOnline: boolean }>`
 const NetworkStatus: React.FC = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showOffline, setShowOffline] = useState(false);
+  const [connectionType, setConnectionType] = useState<string>('');
 
   useEffect(() => {
     const handleOnline = () => {
@@ -31,8 +32,21 @@ const NetworkStatus: React.FC = () => {
       setShowOffline(true);
     };
 
+    // Enhanced connection type detection for mobile
+    const detectConnectionType = () => {
+      if ('connection' in navigator) {
+        const connection = (navigator as any).connection;
+        if (connection) {
+          setConnectionType(connection.effectiveType || connection.type || 'unknown');
+        }
+      }
+    };
+
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
+    
+    // Detect connection type on mount
+    detectConnectionType();
 
     // Show offline status initially if offline
     if (!navigator.onLine) {
@@ -47,9 +61,19 @@ const NetworkStatus: React.FC = () => {
 
   if (!showOffline && isOnline) return null;
 
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const message = isOnline 
+    ? '✅ Back online!' 
+    : `⚠️ No internet connection${isMobile ? ' - Check your mobile data or Wi-Fi' : ' - Please check your network'}`;
+
   return (
     <StatusBar isOnline={isOnline}>
-      {isOnline ? '✅ Back online!' : '⚠️ No internet connection - Please check your network'}
+      {message}
+      {connectionType && isOnline && (
+        <span style={{ fontSize: '0.8em', opacity: 0.8 }}>
+          {` (${connectionType})`}
+        </span>
+      )}
     </StatusBar>
   );
 };

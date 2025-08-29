@@ -11,8 +11,25 @@ app.use(cors({
   origin: true, // Allow all origins in production
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'X-Device-Type'],
+  exposedHeaders: ['X-Device-Type'],
+  maxAge: 86400 // Cache preflight requests for 24 hours
 }));
+
+// Add mobile-specific headers
+app.use((req, res, next) => {
+  // Add security headers for mobile
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  
+  // Add mobile-friendly headers
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  
+  next();
+});
 
 app.use(express.json({ limit: '10mb' }));
 
