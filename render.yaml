@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: joy-dairy-backend
+    name: joy-dairy-fullstack
     env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install && npm install --prefix client && npm run build --prefix client
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -11,7 +11,7 @@ services:
       - key: PORT
         fromService:
           type: web
-          name: joy-dairy-backend
+          name: joy-dairy-fullstack
           property: port
       - key: MONGODB_URI
         sync: false # You'll set this manually in Render dashboard

@@ -5,10 +5,9 @@ export const API_CONFIG = {
     baseURL: 'http://localhost:5000'
   },
   
-  // Production - Update these URLs when you deploy your backend
+  // Production - Same domain (frontend and backend served together)
   production: {
-    // Replace with your actual backend URL (Railway, Render, Heroku, etc.)
-    baseURL: 'https://your-backend-url.com'
+    baseURL: '' // Empty string means same domain
   }
 };
 
