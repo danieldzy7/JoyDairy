@@ -64,19 +64,80 @@ const GlobalStyles = createGlobalStyle`
     outline-offset: 2px;
   }
 
-  /* Toast notifications positioning for mobile */
+  /* Toast notifications - extremely small and compact */
   .Toastify__toast-container {
-    width: auto;
-    margin: 0 10px;
+    width: auto !important;
+    max-width: 200px !important;
     
     @media (max-width: 768px) {
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      position: fixed;
-      width: calc(100% - 40px);
-      max-width: 400px;
+      top: 70px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      position: fixed !important;
+      width: auto !important;
+      max-width: 180px !important;
+      margin: 0 10px !important;
     }
+  }
+
+  .Toastify__toast {
+    padding: 4px 8px !important;
+    font-size: 0.7rem !important;
+    border-radius: 12px !important;
+    min-height: 24px !important;
+    max-height: 28px !important;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 4px !important;
+    
+    @media (max-width: 768px) {
+      padding: 3px 6px !important;
+      font-size: 0.65rem !important;
+      min-height: 22px !important;
+      max-height: 26px !important;
+      max-width: 170px !important;
+    }
+  }
+
+  .Toastify__toast-body {
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1.1 !important;
+    font-weight: 500 !important;
+    display: flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .Toastify__close-button {
+    width: 10px !important;
+    height: 10px !important;
+    opacity: 0.4 !important;
+    
+    @media (max-width: 768px) {
+      width: 8px !important;
+      height: 8px !important;
+    }
+  }
+
+  .Toastify__progress-bar {
+    height: 1px !important;
+  }
+
+  .Toastify__toast--success {
+    background: #4caf50 !important;
+    color: white !important;
+  }
+
+  .Toastify__toast--error {
+    background: #f44336 !important;
+    color: white !important;
+  }
+
+  .Toastify__toast--info {
+    background: #2196f3 !important;
+    color: white !important;
   }
 `;
 

@@ -4,6 +4,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useAuth } from '../contexts/AuthContext';
 import { entryService, Entry, CreateEntryData } from '../services/api';
+import InspiringQuotes from './InspiringQuotes';
 import { toast } from 'react-toastify';
 
 const Container = styled.div`
@@ -14,36 +15,170 @@ const Container = styled.div`
 
 const Header = styled.header`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: 30px;
   flex-wrap: wrap;
   gap: 15px;
 `;
 
-const WelcomeText = styled.h1`
-  color: #333;
-  font-size: 1.8rem;
-  margin: 0;
-  
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
+
+
+const MenuButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
   }
 `;
 
-const LogoutButton = styled.button`
-  background: #ff6b6b;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-weight: 600;
+const MenuLine = styled.div`
+  width: 20px;
+  height: 2px;
+  background: #475569;
+  border-radius: 1px;
   transition: all 0.3s ease;
+`;
+
+const SidebarOverlay = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isOpen',
+})<{ isOpen: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  opacity: ${props => props.isOpen ? 1 : 0};
+  visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
+  transition: all 0.3s ease;
+`;
+
+const Sidebar = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isOpen',
+})<{ isOpen: boolean }>`
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  transform: translateX(${props => props.isOpen ? '0' : '100%'});
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+`;
+
+const SidebarHeader = styled.div`
+  padding: 24px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+`;
+
+const UserAvatar = styled.div`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+`;
+
+const UserName = styled.h3`
+  margin: 0 0 4px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+`;
+
+const UserEmail = styled.p`
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.9;
+`;
+
+const SidebarContent = styled.div`
+  flex: 1;
+  padding: 20px 0;
+`;
+
+const MenuItem = styled.button`
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  color: #475569;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: #ff5252;
-    transform: translateY(-2px);
+    background: #f8fafc;
+    color: #667eea;
+  }
+
+  &.logout {
+    color: #ef4444;
+    border-top: 1px solid #e2e8f0;
+    margin-top: auto;
+
+    &:hover {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+  }
+`;
+
+const MenuIcon = styled.span`
+  font-size: 1.1rem;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
   }
 `;
 
@@ -92,12 +227,7 @@ const EntrySection = styled.div`
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 `;
 
-const EntryHeader = styled.h2`
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 1.5rem;
-`;
+
 
 const SelectedDate = styled.p`
   text-align: center;
@@ -132,7 +262,8 @@ const TextArea = styled.textarea`
   font-size: 16px;
   font-family: inherit;
   resize: vertical;
-  min-height: 100px;
+  min-height: 120px;
+  height: 120px;
   transition: border-color 0.3s ease;
 
   &:focus {
@@ -147,28 +278,27 @@ const TextArea = styled.textarea`
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 15px;
-  margin-top: 10px;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
+  gap: 10px;
+  margin-top: 15px;
+  justify-content: flex-end;
+  align-items: center;
 `;
 
 const SaveButton = styled.button`
-  flex: 1;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
+  min-width: 100px;
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
   }
 
   &:disabled {
@@ -182,16 +312,18 @@ const DeleteButton = styled.button`
   background: #ff6b6b;
   color: white;
   border: none;
-  padding: 15px 25px;
-  border-radius: 10px;
-  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-width: 80px;
 
   &:hover {
     background: #ff5252;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
   }
 `;
 
@@ -201,12 +333,12 @@ const Dashboard: React.FC = () => {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [, setCurrentEntry] = useState<Entry | null>(null);
   const [formData, setFormData] = useState({
-    gratitude: '',
-    manifestation: '',
-    reflection: ''
+    goodThings: ''
   });
   const [loading, setLoading] = useState(false);
   const [hasEntry, setHasEntry] = useState(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Load all entries on component mount
   useEffect(() => {
@@ -235,20 +367,20 @@ const Dashboard: React.FC = () => {
 
     if (existingEntry) {
       setCurrentEntry(existingEntry);
+      // For backward compatibility, try to load from gratitude or reflection fields
+      const goodThingsContent = (existingEntry as any).goodThings || existingEntry.gratitude || existingEntry.reflection || '';
       setFormData({
-        gratitude: existingEntry.gratitude,
-        manifestation: existingEntry.manifestation,
-        reflection: existingEntry.reflection
+        goodThings: goodThingsContent
       });
       setHasEntry(true);
+      setHasUserInteracted(true); // User has existing content
     } else {
       setCurrentEntry(null);
       setFormData({
-        gratitude: '',
-        manifestation: '',
-        reflection: ''
+        goodThings: ''
       });
       setHasEntry(false);
+      setHasUserInteracted(false);
     }
   };
 
@@ -259,6 +391,16 @@ const Dashboard: React.FC = () => {
     });
   };
 
+  const handleTextareaFocus = () => {
+    // Only show indicators if it's a new entry and user hasn't interacted yet
+    if (!hasEntry && !hasUserInteracted && formData.goodThings === '') {
+      setFormData({
+        goodThings: '1. \n2. \n3. '
+      });
+      setHasUserInteracted(true);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -266,23 +408,23 @@ const Dashboard: React.FC = () => {
     try {
       const entryData: CreateEntryData = {
         date: selectedDate.toISOString().split('T')[0],
-        gratitude: formData.gratitude,
-        manifestation: formData.manifestation,
-        reflection: formData.reflection
+        gratitude: formData.goodThings,
+        manifestation: 'Good things journal entry',
+        reflection: formData.goodThings
       };
 
       await entryService.createOrUpdateEntry(entryData);
       await loadEntries();
-      toast.success(hasEntry ? 'Entry updated successfully!' : 'Entry saved successfully!');
+      toast.success(hasEntry ? 'Good things updated successfully!' : 'Good things saved successfully!');
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Error saving entry');
+      toast.error(error.response?.data?.message || 'Error saving good things');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!hasEntry || !window.confirm('Are you sure you want to delete this entry?')) {
+    if (!hasEntry) {
       return;
     }
 
@@ -290,9 +432,9 @@ const Dashboard: React.FC = () => {
       const dateString = selectedDate.toISOString().split('T')[0];
       await entryService.deleteEntry(dateString);
       await loadEntries();
-      toast.success('Entry deleted successfully!');
+      toast.success('Good things deleted successfully!');
     } catch (error) {
-      toast.error('Error deleting entry');
+      toast.error('Error deleting good things');
     }
   };
 
@@ -307,9 +449,15 @@ const Dashboard: React.FC = () => {
   return (
     <Container>
       <Header>
-        <WelcomeText>Welcome back, {user?.name}!</WelcomeText>
-        <LogoutButton onClick={logout}>Logout</LogoutButton>
+        <MenuButton onClick={() => setSidebarOpen(true)}>
+          <MenuLine />
+          <MenuLine />
+          <MenuLine />
+        </MenuButton>
       </Header>
+
+      {/* Inspiring Quotes Section */}
+      <InspiringQuotes />
 
       <CalendarContainer>
         <Calendar
@@ -320,7 +468,6 @@ const Dashboard: React.FC = () => {
       </CalendarContainer>
 
       <EntrySection>
-        <EntryHeader>Daily Reflection</EntryHeader>
         <SelectedDate>
           {selectedDate.toLocaleDateString('en-US', {
             weekday: 'long',
@@ -332,44 +479,21 @@ const Dashboard: React.FC = () => {
 
         <Form onSubmit={handleSubmit}>
           <FieldGroup>
-            <Label htmlFor="gratitude">What are you grateful for today?</Label>
+            <Label htmlFor="goodThings">What three good things happened today?</Label>
             <TextArea
-              id="gratitude"
-              name="gratitude"
-              placeholder="Share something you're grateful for..."
-              value={formData.gratitude}
+              id="goodThings"
+              name="goodThings"
+              placeholder="List three good things that happened today - big or small moments, achievements, positive interactions, or anything that brought you joy..."
+              value={formData.goodThings}
               onChange={handleInputChange}
-              required
-            />
-          </FieldGroup>
-
-          <FieldGroup>
-            <Label htmlFor="manifestation">What are you manifesting?</Label>
-            <TextArea
-              id="manifestation"
-              name="manifestation"
-              placeholder="Describe what you want to bring into your life..."
-              value={formData.manifestation}
-              onChange={handleInputChange}
-              required
-            />
-          </FieldGroup>
-
-          <FieldGroup>
-            <Label htmlFor="reflection">Daily reflection</Label>
-            <TextArea
-              id="reflection"
-              name="reflection"
-              placeholder="Reflect on your day, thoughts, and feelings..."
-              value={formData.reflection}
-              onChange={handleInputChange}
+              onFocus={handleTextareaFocus}
               required
             />
           </FieldGroup>
 
           <ButtonGroup>
             <SaveButton type="submit" disabled={loading}>
-              {loading ? 'Saving...' : hasEntry ? 'Update Entry' : 'Save Entry'}
+              {loading ? 'Saving...' : hasEntry ? 'Update Good Things' : 'Save Good Things'}
             </SaveButton>
             {hasEntry && (
               <DeleteButton type="button" onClick={handleDelete}>
@@ -379,6 +503,41 @@ const Dashboard: React.FC = () => {
           </ButtonGroup>
         </Form>
       </EntrySection>
+
+      {/* Sidebar */}
+      <SidebarOverlay isOpen={sidebarOpen} onClick={() => setSidebarOpen(false)} />
+      <Sidebar isOpen={sidebarOpen}>
+        <SidebarHeader>
+          <CloseButton onClick={() => setSidebarOpen(false)}>×</CloseButton>
+          <UserAvatar>👤</UserAvatar>
+          <UserName>{user?.name}</UserName>
+          <UserEmail>{user?.email}</UserEmail>
+        </SidebarHeader>
+        
+        <SidebarContent>
+          <MenuItem>
+            <MenuIcon>👤</MenuIcon>
+            Profile
+          </MenuItem>
+          <MenuItem>
+            <MenuIcon>⚙️</MenuIcon>
+            Settings
+          </MenuItem>
+          <MenuItem>
+            <MenuIcon>📊</MenuIcon>
+            Analytics
+          </MenuItem>
+          <MenuItem>
+            <MenuIcon>💡</MenuIcon>
+            Help & Support
+          </MenuItem>
+        </SidebarContent>
+        
+        <MenuItem className="logout" onClick={logout}>
+          <MenuIcon>🚪</MenuIcon>
+          Logout
+        </MenuItem>
+      </Sidebar>
     </Container>
   );
 };
