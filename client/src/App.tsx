@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import NetworkStatus from './components/NetworkStatus';
 import GlobalStyles from './styles/GlobalStyles';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -55,6 +56,7 @@ function App() {
     <AuthProvider>
       <Router>
         <GlobalStyles />
+        <NetworkStatus />
         <div className="App">
           <Routes>
             <Route path="/" element={<LandingPage />} />

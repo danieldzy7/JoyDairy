@@ -65,27 +65,53 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log('Attempting login with:', { email, baseURL: axios.defaults.baseURL });
       const response = await axios.post('/api/auth/login', { email, password });
       const { token: newToken, user: userData } = response.data;
       
       localStorage.setItem('token', newToken);
       setToken(newToken);
       setUser(userData);
+      console.log('Login successful');
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Login failed');
+      console.error('Login error:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        baseURL: axios.defaults.baseURL
+      });
+      
+      if (error.response?.status === 0 || error.code === 'NETWORK_ERROR') {
+        throw new Error('Network error - please check your internet connection');
+      }
+      
+      throw new Error(error.response?.data?.message || `Login failed: ${error.message}`);
     }
   };
 
   const register = async (name: string, email: string, password: string) => {
     try {
+      console.log('Attempting registration with:', { name, email, baseURL: axios.defaults.baseURL });
       const response = await axios.post('/api/auth/register', { name, email, password });
       const { token: newToken, user: userData } = response.data;
       
       localStorage.setItem('token', newToken);
       setToken(newToken);
       setUser(userData);
+      console.log('Registration successful');
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Registration failed');
+      console.error('Registration error:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        baseURL: axios.defaults.baseURL
+      });
+      
+      if (error.response?.status === 0 || error.code === 'NETWORK_ERROR') {
+        throw new Error('Network error - please check your internet connection');
+      }
+      
+      throw new Error(error.response?.data?.message || `Registration failed: ${error.message}`);
     }
   };
 

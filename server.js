@@ -6,9 +6,24 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Enhanced CORS configuration for mobile
+app.use(cors({
+  origin: true, // Allow all origins in production
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
+}));
+
+app.use(express.json({ limit: '10mb' }));
+
+// Add request logging for debugging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`, {
+    body: req.method === 'POST' ? req.body : undefined,
+    headers: req.headers['user-agent'] || 'Unknown'
+  });
+  next();
+});
 
 // MongoDB Connection
 const connectDB = async () => {
