@@ -28,14 +28,16 @@ const Overlay = styled.div`
 `;
 
 const Modal = styled.div`
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
   padding: 30px;
   max-width: 400px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(116, 150, 136, 0.2);
   animation: ${fadeIn} 0.3s ease-out;
   text-align: center;
+  border: 1px solid rgba(116, 150, 136, 0.1);
+  backdrop-filter: blur(10px);
 `;
 
 const Icon = styled.div<{ type: 'error' | 'warning' | 'network' }>`
@@ -50,47 +52,49 @@ const Icon = styled.div<{ type: 'error' | 'warning' | 'network' }>`
   color: white;
   background: ${props => {
     switch (props.type) {
-      case 'error': return 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)';
-      case 'warning': return 'linear-gradient(135deg, #ffa726 0%, #ff9800 100%)';
-      case 'network': return 'linear-gradient(135deg, #42a5f5 0%, #1976d2 100%)';
-      default: return 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)';
+      case 'error': return 'linear-gradient(135deg, #e8b4b4 0%, #d4a5a5 100%)';
+      case 'warning': return 'linear-gradient(135deg, #f4d4a4 0%, #e8c495 100%)';
+      case 'network': return 'linear-gradient(135deg, #748e88 0%, #5a7a6e 100%)';
+      default: return 'linear-gradient(135deg, #e8b4b4 0%, #d4a5a5 100%)';
     }
   }};
+  box-shadow: 0 8px 20px rgba(116, 150, 136, 0.2);
 `;
 
 const Title = styled.h2`
-  color: #333;
+  color: #5a7a6e;
   font-size: 1.5rem;
   margin-bottom: 15px;
   font-weight: 600;
 `;
 
 const Message = styled.p`
-  color: #666;
+  color: #748e88;
   font-size: 1rem;
   line-height: 1.5;
   margin-bottom: 20px;
 `;
 
 const ErrorDetails = styled.div`
-  background: #f8f9fa;
-  border-radius: 10px;
+  background: rgba(116, 150, 136, 0.05);
+  border-radius: 12px;
   padding: 15px;
   margin-bottom: 20px;
   text-align: left;
+  border: 1px solid rgba(116, 150, 136, 0.1);
 `;
 
 const ErrorCode = styled.div`
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
-  color: #d32f2f;
+  color: #d4a5a5;
   font-weight: 600;
   margin-bottom: 8px;
 `;
 
 const ErrorDescription = styled.div`
   font-size: 0.9rem;
-  color: #666;
+  color: #748e88;
   line-height: 1.4;
 `;
 
@@ -100,7 +104,7 @@ const Suggestions = styled.div`
 `;
 
 const SuggestionTitle = styled.h4`
-  color: #333;
+  color: #5a7a6e;
   font-size: 1rem;
   margin-bottom: 10px;
   font-weight: 600;
@@ -109,7 +113,7 @@ const SuggestionTitle = styled.h4`
 const SuggestionList = styled.ul`
   margin: 0;
   padding-left: 20px;
-  color: #666;
+  color: #748e88;
   font-size: 0.9rem;
   line-height: 1.5;
 `;
@@ -124,7 +128,7 @@ const ButtonGroup = styled.div`
 const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   padding: 12px 24px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -132,21 +136,23 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   min-width: 100px;
 
   ${props => props.variant === 'primary' ? `
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #748e88 0%, #5a7a6e 100%);
     color: white;
+    box-shadow: 0 4px 12px rgba(116, 150, 136, 0.2);
     
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 6px 20px rgba(116, 150, 136, 0.3);
     }
   ` : `
-    background: #f8f9fa;
-    color: #666;
-    border: 2px solid #e1e1e1;
+    background: rgba(255, 255, 255, 0.8);
+    color: #748e88;
+    border: 2px solid rgba(116, 150, 136, 0.2);
     
     &:hover {
-      background: #e9ecef;
-      border-color: #ced4da;
+      background: rgba(116, 150, 136, 0.1);
+      border-color: rgba(116, 150, 136, 0.3);
+      transform: translateY(-1px);
     }
   `}
 

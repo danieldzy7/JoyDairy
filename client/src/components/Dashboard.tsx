@@ -7,10 +7,103 @@ import { entryService, Entry, CreateEntryData } from '../services/api';
 import InspiringQuotes from './InspiringQuotes';
 import { toast } from 'react-toastify';
 
-const Container = styled.div`
+// Theme types
+type Theme = 'default' | 'white' | 'green' | 'pink' | 'blue' | 'purple';
+
+interface ThemeConfig {
+  background: string;
+  primary: string;
+  secondary: string;
+  text: string;
+  cardBg: string;
+  border: string;
+  shadow: string;
+  accent: string;
+  sidebarBg: string;
+  sidebarHeader: string;
+}
+
+// Theme configurations - Light versions for counseling & healing
+const themes: Record<Theme, ThemeConfig> = {
+  default: {
+    background: '#ffffff',
+    primary: '#6b7280',
+    secondary: '#9ca3af',
+    text: '#374151',
+    cardBg: '#ffffff',
+    border: '#e5e7eb',
+    shadow: 'rgba(0, 0, 0, 0.05)',
+    accent: '#6b7280',
+    sidebarBg: '#ffffff',
+    sidebarHeader: '#f9fafb'
+  },
+  white: {
+    background: 'linear-gradient(135deg, #fafafa 0%, #f5f5f5 50%, #f0f0f0 100%)',
+    primary: '#6b7280',
+    secondary: '#9ca3af',
+    text: '#374151',
+    cardBg: 'rgba(255, 255, 255, 0.95)',
+    border: 'rgba(107, 114, 128, 0.1)',
+    shadow: 'rgba(107, 114, 128, 0.05)',
+    accent: '#6b7280',
+    sidebarBg: 'linear-gradient(180deg, #ffffff 0%, #fafafa 100%)',
+    sidebarHeader: 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
+  },
+  green: {
+    background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%)',
+    primary: '#10b981',
+    secondary: '#059669',
+    text: '#047857',
+    cardBg: 'rgba(255, 255, 255, 0.92)',
+    border: 'rgba(16, 185, 129, 0.1)',
+    shadow: 'rgba(16, 185, 129, 0.05)',
+    accent: '#10b981',
+    sidebarBg: 'linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%)',
+    sidebarHeader: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+  },
+  pink: {
+    background: 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%)',
+    primary: '#f472b6',
+    secondary: '#ec4899',
+    text: '#db2777',
+    cardBg: 'rgba(255, 255, 255, 0.92)',
+    border: 'rgba(244, 114, 182, 0.1)',
+    shadow: 'rgba(244, 114, 182, 0.05)',
+    accent: '#f472b6',
+    sidebarBg: 'linear-gradient(180deg, #fdf2f8 0%, #fce7f3 100%)',
+    sidebarHeader: 'linear-gradient(135deg, #f472b6 0%, #ec4899 100%)'
+  },
+  blue: {
+    background: 'linear-gradient(135deg, #AEC6E4 0%, #8BB8E8 50%, #6A8CD2 100%)',
+    primary: '#4A69BB',
+    secondary: '#667EEA',
+    text: '#2D3748',
+    cardBg: 'rgba(255, 255, 255, 0.95)',
+    border: 'rgba(74, 105, 187, 0.1)',
+    shadow: 'rgba(74, 105, 187, 0.08)',
+    accent: '#667EEA',
+    sidebarBg: 'linear-gradient(180deg, #AEC6E4 0%, #8BB8E8 100%)',
+    sidebarHeader: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)'
+  },
+  purple: {
+    background: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #e9d5ff 100%)',
+    primary: '#a78bfa',
+    secondary: '#8b5cf6',
+    text: '#7c3aed',
+    cardBg: 'rgba(255, 255, 255, 0.92)',
+    border: 'rgba(167, 139, 250, 0.1)',
+    shadow: 'rgba(167, 139, 250, 0.05)',
+    accent: '#a78bfa',
+    sidebarBg: 'linear-gradient(180deg, #faf5ff 0%, #f3e8ff 100%)',
+    sidebarHeader: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)'
+  }
+};
+
+const Container = styled.div<{ $theme: Theme }>`
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: ${props => themes[props.$theme].background};
   padding: 20px;
+  transition: all 0.3s ease;
 `;
 
 const Header = styled.header`
@@ -24,12 +117,12 @@ const Header = styled.header`
 
 
 
-const MenuButton = styled.button`
-  background: transparent;
-  border: none;
+const MenuButton = styled.button<{ $theme: Theme }>`
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid ${props => themes[props.$theme].border};
   cursor: pointer;
   padding: 8px;
-  border-radius: 8px;
+  border-radius: 12px;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -38,16 +131,19 @@ const MenuButton = styled.button`
   height: 36px;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(10px);
 
   &:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: ${props => themes[props.$theme].accent}20;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px ${props => themes[props.$theme].shadow};
   }
 `;
 
-const MenuLine = styled.div`
+const MenuLine = styled.div<{ $theme: Theme }>`
   width: 20px;
   height: 2px;
-  background: #475569;
+  background: ${props => themes[props.$theme].primary};
   border-radius: 1px;
   transition: all 0.3s ease;
 `;
@@ -69,26 +165,27 @@ const SidebarOverlay = styled.div.withConfig({
 `;
 
 const Sidebar = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== 'isOpen',
-})<{ isOpen: boolean }>`
+  shouldForwardProp: (prop) => prop !== 'isOpen' && prop !== '$theme',
+})<{ isOpen: boolean; $theme: Theme }>`
   position: fixed;
   top: 0;
   right: 0;
   width: 280px;
   height: 100vh;
-  background: white;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  background: ${props => themes[props.$theme].sidebarBg};
+  box-shadow: -8px 0 30px ${props => themes[props.$theme].shadow};
   transform: translateX(${props => props.isOpen ? '0' : '100%'});
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1001;
   display: flex;
   flex-direction: column;
+  border-left: 1px solid ${props => themes[props.$theme].border};
 `;
 
-const SidebarHeader = styled.div`
+const SidebarHeader = styled.div<{ $theme: Theme }>`
   padding: 24px 20px;
-  border-bottom: 1px solid #e2e8f0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: 1px solid ${props => themes[props.$theme].border};
+  background: ${props => themes[props.$theme].sidebarHeader};
   color: white;
 `;
 
@@ -122,7 +219,7 @@ const SidebarContent = styled.div`
   padding: 20px 0;
 `;
 
-const MenuItem = styled.button`
+const MenuItem = styled.button<{ $theme: Theme }>`
   width: 100%;
   padding: 16px 20px;
   border: none;
@@ -133,17 +230,17 @@ const MenuItem = styled.button`
   align-items: center;
   gap: 12px;
   font-size: 0.95rem;
-  color: #475569;
+  color: ${props => themes[props.$theme].text};
   transition: all 0.2s ease;
 
   &:hover {
-    background: #f8fafc;
-    color: #667eea;
+    background: ${props => themes[props.$theme].accent}20;
+    color: ${props => themes[props.$theme].primary};
   }
 
   &.logout {
     color: #ef4444;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid ${props => themes[props.$theme].border};
     margin-top: auto;
 
     &:hover {
@@ -158,6 +255,52 @@ const MenuIcon = styled.span`
   width: 20px;
   display: flex;
   justify-content: center;
+`;
+
+const ThemeSection = styled.div<{ $theme: Theme }>`
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid ${props => themes[props.$theme].border};
+`;
+
+const ThemeTitle = styled.h4<{ $theme: Theme }>`
+  color: ${props => themes[props.$theme].text};
+  margin: 0 0 15px 0;
+  font-size: 1rem;
+  font-weight: 600;
+`;
+
+const ThemeOptions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const ThemeOption = styled.div<{ $theme: Theme; $isActive: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: ${props => props.$isActive ? themes[props.$theme].accent + '20' : 'transparent'};
+  border: 2px solid ${props => props.$isActive ? themes[props.$theme].accent : 'transparent'};
+  color: ${props => themes[props.$theme].text};
+
+  &:hover {
+    background: ${props => themes[props.$theme].accent}15;
+    transform: translateX(4px);
+  }
+`;
+
+const ThemeColor = styled.div<{ color: string }>`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: ${props => props.color};
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const CloseButton = styled.button`
@@ -182,49 +325,88 @@ const CloseButton = styled.button`
   }
 `;
 
-const CalendarContainer = styled.div`
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
+const CalendarContainer = styled.div<{ $theme: Theme }>`
+  background: ${props => themes[props.$theme].cardBg};
+  border-radius: 20px;
+  padding: 25px;
   margin-bottom: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px ${props => themes[props.$theme].shadow};
+  border: 1px solid ${props => themes[props.$theme].border};
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
   
   .react-calendar {
     width: 100%;
     border: none;
     font-family: inherit;
+    background: transparent;
   }
   
   .react-calendar__tile {
     padding: 12px;
     background: none;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    color: ${props => themes[props.$theme].text};
     
     &:hover {
-      background: #e3f2fd;
+      background: ${props => themes[props.$theme].accent}20;
+      transform: scale(1.05);
     }
     
     &--active {
-      background: #667eea !important;
+      background: ${props => themes[props.$theme].sidebarHeader} !important;
       color: white;
+      box-shadow: 0 4px 12px ${props => themes[props.$theme].shadow};
     }
   }
   
   .react-calendar__tile--hasEntry {
-    background: #c8e6c9;
+    background: ${props => themes[props.$theme].accent}20;
+    border: 2px solid ${props => themes[props.$theme].accent}40;
     
     &:hover {
-      background: #a5d6a7;
+      background: ${props => themes[props.$theme].accent}30;
     }
+  }
+
+  .react-calendar__navigation {
+    margin-bottom: 20px;
+  }
+
+  .react-calendar__navigation button {
+    background: ${props => themes[props.$theme].accent}20;
+    border: 1px solid ${props => themes[props.$theme].accent}30;
+    border-radius: 8px;
+    color: ${props => themes[props.$theme].text};
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: ${props => themes[props.$theme].accent}30;
+      transform: translateY(-1px);
+    }
+  }
+
+  .react-calendar__month-view__weekdays {
+    margin-bottom: 10px;
+  }
+
+  .react-calendar__month-view__weekdays__weekday {
+    color: ${props => themes[props.$theme].primary};
+    font-weight: 600;
+    padding: 8px;
   }
 `;
 
-const EntrySection = styled.div`
-  background: white;
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+const EntrySection = styled.div<{ $theme: Theme }>`
+  background: ${props => themes[props.$theme].cardBg};
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 8px 32px ${props => themes[props.$theme].shadow};
+  border: 1px solid ${props => themes[props.$theme].border};
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
 `;
 
 
@@ -242,23 +424,28 @@ const FieldGroup = styled.div`
 `;
 
 const TextArea = styled.textarea`
-  padding: 15px;
-  border: 2px solid #e1e1e1;
-  border-radius: 10px;
+  padding: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 15px;
   font-size: 16px;
   font-family: inherit;
   resize: vertical;
   min-height: 120px;
   height: 120px;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  color: #374151;
 
   &:focus {
     outline: none;
     border-color: #667eea;
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
   }
 
   &::placeholder {
-    color: #999;
+    color: #9ca3af;
   }
 `;
 
@@ -270,21 +457,22 @@ const ButtonGroup = styled.div`
   align-items: center;
 `;
 
-const SaveButton = styled.button`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+const SaveButton = styled.button<{ $theme: Theme }>`
+  background: ${props => themes[props.$theme].sidebarHeader};
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 100px;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  box-shadow: 0 4px 12px ${props => themes[props.$theme].shadow};
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px ${props => themes[props.$theme].shadow};
   }
 
   &:disabled {
@@ -294,22 +482,23 @@ const SaveButton = styled.button`
   }
 `;
 
-const DeleteButton = styled.button`
-  background: #ff6b6b;
+const DeleteButton = styled.button<{ $theme: Theme }>`
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 80px;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 
   &:hover {
-    background: #ff5252;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
   }
 `;
 
@@ -325,6 +514,7 @@ const Dashboard: React.FC = () => {
   const [hasEntry, setHasEntry] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentTheme, setCurrentTheme] = useState<Theme>('default');
 
   // Load all entries on component mount
   useEffect(() => {
@@ -433,19 +623,19 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <Container>
+    <Container $theme={currentTheme}>
       <Header>
-        <MenuButton onClick={() => setSidebarOpen(true)}>
-          <MenuLine />
-          <MenuLine />
-          <MenuLine />
+        <MenuButton onClick={() => setSidebarOpen(true)} $theme={currentTheme}>
+          <MenuLine $theme={currentTheme} />
+          <MenuLine $theme={currentTheme} />
+          <MenuLine $theme={currentTheme} />
         </MenuButton>
       </Header>
 
       {/* Inspiring Quotes Section */}
-      <InspiringQuotes />
+      <InspiringQuotes theme={currentTheme} />
 
-      <CalendarContainer>
+      <CalendarContainer $theme={currentTheme}>
         <Calendar
           onChange={(value) => setSelectedDate(value as Date)}
           value={selectedDate}
@@ -453,7 +643,7 @@ const Dashboard: React.FC = () => {
         />
       </CalendarContainer>
 
-      <EntrySection>
+      <EntrySection $theme={currentTheme}>
         <Form onSubmit={handleSubmit}>
           <FieldGroup>
             <TextArea
@@ -468,11 +658,11 @@ const Dashboard: React.FC = () => {
           </FieldGroup>
 
           <ButtonGroup>
-            <SaveButton type="submit" disabled={loading}>
+            <SaveButton type="submit" disabled={loading} $theme={currentTheme}>
               {loading ? 'Saving...' : hasEntry ? 'Update Good Things' : 'Save Good Things'}
             </SaveButton>
             {hasEntry && (
-              <DeleteButton type="button" onClick={handleDelete}>
+              <DeleteButton type="button" onClick={handleDelete} $theme={currentTheme}>
                 Delete
               </DeleteButton>
             )}
@@ -480,40 +670,70 @@ const Dashboard: React.FC = () => {
         </Form>
       </EntrySection>
 
-      {/* Sidebar */}
-      <SidebarOverlay isOpen={sidebarOpen} onClick={() => setSidebarOpen(false)} />
-      <Sidebar isOpen={sidebarOpen}>
-        <SidebarHeader>
-          <CloseButton onClick={() => setSidebarOpen(false)}>×</CloseButton>
-          <UserAvatar>👤</UserAvatar>
-          <UserName>{user?.name}</UserName>
-          <UserEmail>{user?.email}</UserEmail>
-        </SidebarHeader>
-        
-        <SidebarContent>
-          <MenuItem>
-            <MenuIcon>👤</MenuIcon>
-            Profile
-          </MenuItem>
-          <MenuItem>
-            <MenuIcon>⚙️</MenuIcon>
-            Settings
-          </MenuItem>
-          <MenuItem>
-            <MenuIcon>📊</MenuIcon>
-            Analytics
-          </MenuItem>
-          <MenuItem>
-            <MenuIcon>💡</MenuIcon>
-            Help & Support
-          </MenuItem>
-        </SidebarContent>
-        
-        <MenuItem className="logout" onClick={logout}>
-          <MenuIcon>🚪</MenuIcon>
-          Logout
-        </MenuItem>
-      </Sidebar>
+             {/* Sidebar */}
+       <SidebarOverlay isOpen={sidebarOpen} onClick={() => setSidebarOpen(false)} />
+       <Sidebar isOpen={sidebarOpen} $theme={currentTheme}>
+         <SidebarHeader $theme={currentTheme}>
+           <CloseButton onClick={() => setSidebarOpen(false)}>×</CloseButton>
+           <UserAvatar>👤</UserAvatar>
+           <UserName>{user?.name}</UserName>
+           <UserEmail>{user?.email}</UserEmail>
+         </SidebarHeader>
+         
+         <SidebarContent>
+           <MenuItem $theme={currentTheme}>
+             <MenuIcon>👤</MenuIcon>
+             Profile
+           </MenuItem>
+           <MenuItem $theme={currentTheme}>
+             <MenuIcon>⚙️</MenuIcon>
+             Settings
+           </MenuItem>
+           <MenuItem $theme={currentTheme}>
+             <MenuIcon>📊</MenuIcon>
+             Analytics
+           </MenuItem>
+           <MenuItem $theme={currentTheme}>
+             <MenuIcon>💡</MenuIcon>
+             Help & Support
+           </MenuItem>
+
+                       <ThemeSection $theme={currentTheme}>
+              <ThemeTitle $theme={currentTheme}>Theme</ThemeTitle>
+              <ThemeOptions>
+                <ThemeOption $theme={currentTheme} $isActive={currentTheme === 'default'} onClick={() => setCurrentTheme('default')}>
+                  <ThemeColor color="#6b7280" />
+                  Default
+                </ThemeOption>
+                <ThemeOption $theme={currentTheme} $isActive={currentTheme === 'white'} onClick={() => setCurrentTheme('white')}>
+                  <ThemeColor color="#6b7280" />
+                  White
+                </ThemeOption>
+                <ThemeOption $theme={currentTheme} $isActive={currentTheme === 'green'} onClick={() => setCurrentTheme('green')}>
+                  <ThemeColor color="#10b981" />
+                  Green
+                </ThemeOption>
+                <ThemeOption $theme={currentTheme} $isActive={currentTheme === 'pink'} onClick={() => setCurrentTheme('pink')}>
+                  <ThemeColor color="#f472b6" />
+                  Pink
+                </ThemeOption>
+                <ThemeOption $theme={currentTheme} $isActive={currentTheme === 'blue'} onClick={() => setCurrentTheme('blue')}>
+                  <ThemeColor color="#667EEA" />
+                  Blue
+                </ThemeOption>
+                <ThemeOption $theme={currentTheme} $isActive={currentTheme === 'purple'} onClick={() => setCurrentTheme('purple')}>
+                  <ThemeColor color="#a78bfa" />
+                  Purple
+                </ThemeOption>
+              </ThemeOptions>
+            </ThemeSection>
+         </SidebarContent>
+         
+         <MenuItem className="logout" onClick={logout} $theme={currentTheme}>
+           <MenuIcon>🚪</MenuIcon>
+           Logout
+         </MenuItem>
+       </Sidebar>
     </Container>
   );
 };

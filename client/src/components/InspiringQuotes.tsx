@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+// Theme types
+type Theme = 'default' | 'white' | 'green' | 'pink' | 'blue' | 'purple';
+
 interface QuoteData {
   text: string;
   source: string;
@@ -9,6 +12,40 @@ interface QuoteData {
   reflection: string;
   application: string;
 }
+
+// Theme configurations for InspiringQuotes - All themes use purple for inspiration section
+const quoteThemes = {
+  default: {
+    background: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
+    shadow: 'rgba(167, 139, 250, 0.15)',
+    border: '#e5e7eb'
+  },
+  white: {
+    background: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
+    shadow: 'rgba(167, 139, 250, 0.15)',
+    border: '#e5e7eb'
+  },
+  green: {
+    background: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
+    shadow: 'rgba(167, 139, 250, 0.15)',
+    border: '#e5e7eb'
+  },
+  pink: {
+    background: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
+    shadow: 'rgba(167, 139, 250, 0.15)',
+    border: '#e5e7eb'
+  },
+  blue: {
+    background: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
+    shadow: 'rgba(167, 139, 250, 0.15)',
+    border: '#e5e7eb'
+  },
+  purple: {
+    background: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
+    shadow: 'rgba(167, 139, 250, 0.15)',
+    border: '#e5e7eb'
+  }
+};
 
 const INSPIRING_QUOTES: QuoteData[] = [
   {
@@ -61,13 +98,15 @@ const INSPIRING_QUOTES: QuoteData[] = [
   }
 ];
 
-const QuotesSection = styled.div`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 15px;
+const QuotesSection = styled.div<{ $theme: Theme }>`
+  background: ${props => quoteThemes[props.$theme].background};
+  border-radius: 20px;
   padding: 25px;
   margin-bottom: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px ${props => quoteThemes[props.$theme].shadow};
   text-align: center;
+  border: 1px solid ${props => quoteThemes[props.$theme].border};
+  transition: all 0.3s ease;
 `;
 
 const QuoteContainer = styled.div.withConfig({
@@ -80,30 +119,31 @@ const QuoteContainer = styled.div.withConfig({
   flex-direction: column;
   justify-content: center;
   transition: all 0.3s ease;
-  border-radius: 8px;
-  padding: ${props => props.expanded ? '12px' : '8px'};
-  background: ${props => props.expanded ? 'rgba(255, 255, 255, 0.1)' : 'transparent'};
+  border-radius: 12px;
+  padding: ${props => props.expanded ? '16px' : '12px'};
+  background: ${props => props.expanded ? 'rgba(255, 255, 255, 0.15)' : 'transparent'};
   border: ${props => props.expanded ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid transparent'};
   cursor: pointer;
   
   &:hover {
     background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
   }
 `;
 
-const QuoteText = styled.p`
+const QuoteText = styled.p<{ $theme: Theme }>`
   font-size: 1.1rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   margin: 0 0 10px 0;
   font-style: italic;
   font-weight: 500;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 `;
 
-const QuoteSource = styled.p`
+const QuoteSource = styled.p<{ $theme: Theme }>`
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
   margin: 0;
   font-weight: 600;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -115,8 +155,8 @@ const DetailedContent = styled.div.withConfig({
   max-height: ${props => props.expanded ? '500px' : '0'};
   overflow: hidden;
   transition: all 0.3s ease;
-  margin-top: ${props => props.expanded ? '15px' : '0'};
-  padding-top: ${props => props.expanded ? '15px' : '0'};
+  margin-top: ${props => props.expanded ? '20px' : '0'};
+  padding-top: ${props => props.expanded ? '20px' : '0'};
   border-top: ${props => props.expanded ? '1px solid rgba(255, 255, 255, 0.2)' : 'none'};
 `;
 
@@ -124,26 +164,28 @@ const CategoryTag = styled.span`
   display: inline-block;
   background: rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  padding: 6px 16px;
+  border-radius: 25px;
+  font-size: 0.85rem;
   font-weight: 600;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 18px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 const DetailSection = styled.div`
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 12px;
-  border-left: 3px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 15px;
+  border-left: 4px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
 `;
 
 const DetailTitle = styled.h4`
   color: white;
-  margin: 0 0 8px 0;
-  font-size: 0.9rem;
+  margin: 0 0 10px 0;
+  font-size: 0.95rem;
   font-weight: 600;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 `;
@@ -151,12 +193,16 @@ const DetailTitle = styled.h4`
 const DetailText = styled.p`
   color: rgba(255, 255, 255, 0.9);
   margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.5;
+  font-size: 0.9rem;
+  line-height: 1.6;
   font-style: italic;
 `;
 
-const InspiringQuotes: React.FC = () => {
+interface InspiringQuotesProps {
+  theme?: Theme;
+}
+
+const InspiringQuotes: React.FC<InspiringQuotesProps> = ({ theme = 'green' }) => {
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -167,10 +213,10 @@ const InspiringQuotes: React.FC = () => {
   };
 
   return (
-    <QuotesSection>
+    <QuotesSection $theme={theme}>
       <QuoteContainer expanded={isExpanded} onClick={toggleExpanded}>
-        <QuoteText>"{currentQuote.text}"</QuoteText>
-        <QuoteSource>— {currentQuote.source}</QuoteSource>
+        <QuoteText $theme={theme}>"{currentQuote.text}"</QuoteText>
+        <QuoteSource $theme={theme}>— {currentQuote.source}</QuoteSource>
       </QuoteContainer>
       
       <DetailedContent expanded={isExpanded}>
@@ -196,3 +242,4 @@ const InspiringQuotes: React.FC = () => {
 };
 
 export default InspiringQuotes;
+

@@ -13,8 +13,9 @@ const GlobalStyles = createGlobalStyle`
       sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: #f8f9fa;
+    background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 50%, #f5f5f5 100%);
     line-height: 1.6;
+    color: #5a7a6e;
   }
 
   code {
@@ -39,28 +40,28 @@ const GlobalStyles = createGlobalStyle`
   }
 
   ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: rgba(116, 150, 136, 0.1);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
+    background: rgba(116, 150, 136, 0.3);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+    background: rgba(116, 150, 136, 0.5);
   }
 
   /* Focus styles for accessibility */
   *:focus {
-    outline: 2px solid #667eea;
+    outline: 2px solid #748e88;
     outline-offset: 2px;
   }
 
   button:focus,
   input:focus,
   textarea:focus {
-    outline: 2px solid #667eea;
+    outline: 2px solid #748e88;
     outline-offset: 2px;
   }
 
@@ -86,7 +87,7 @@ const GlobalStyles = createGlobalStyle`
     border-radius: 12px !important;
     min-height: 24px !important;
     max-height: 28px !important;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 1px 6px rgba(116, 150, 136, 0.2) !important;
     margin-bottom: 4px !important;
     
     @media (max-width: 768px) {
@@ -126,17 +127,17 @@ const GlobalStyles = createGlobalStyle`
   }
 
   .Toastify__toast--success {
-    background: #4caf50 !important;
+    background: linear-gradient(135deg, #748e88 0%, #5a7a6e 100%) !important;
     color: white !important;
   }
 
   .Toastify__toast--error {
-    background: #f44336 !important;
+    background: linear-gradient(135deg, #e8b4b4 0%, #d4a5a5 100%) !important;
     color: white !important;
   }
 
   .Toastify__toast--info {
-    background: #2196f3 !important;
+    background: linear-gradient(135deg, #9bb3a8 0%, #8aa397 100%) !important;
     color: white !important;
   }
 `;
