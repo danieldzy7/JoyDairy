@@ -8,7 +8,7 @@ import InspiringQuotes from './InspiringQuotes';
 import { toast } from 'react-toastify';
 
 // Theme types
-type Theme = 'default' | 'white' | 'green' | 'pink' | 'blue' | 'purple';
+type Theme = 'white' | 'green' | 'pink' | 'blue' | 'purple';
 
 interface ThemeConfig {
   background: string;
@@ -25,18 +25,6 @@ interface ThemeConfig {
 
 // Theme configurations - Light versions for counseling & healing
 const themes: Record<Theme, ThemeConfig> = {
-  default: {
-    background: '#ffffff',
-    primary: '#6b7280',
-    secondary: '#9ca3af',
-    text: '#374151',
-    cardBg: '#ffffff',
-    border: '#e5e7eb',
-    shadow: 'rgba(0, 0, 0, 0.05)',
-    accent: '#6b7280',
-    sidebarBg: '#ffffff',
-    sidebarHeader: '#f9fafb'
-  },
   white: {
     background: 'linear-gradient(135deg, #fafafa 0%, #f5f5f5 50%, #f0f0f0 100%)',
     primary: '#6b7280',
@@ -74,16 +62,16 @@ const themes: Record<Theme, ThemeConfig> = {
     sidebarHeader: 'linear-gradient(135deg, #f472b6 0%, #ec4899 100%)'
   },
   blue: {
-    background: 'linear-gradient(135deg, #AEC6E4 0%, #8BB8E8 50%, #6A8CD2 100%)',
-    primary: '#667EEA',
-    secondary: '#764BA2',
+    background: 'linear-gradient(135deg, #E0F2F7 0%, #D0EEF5 100%)',
+    primary: '#2196F3',
+    secondary: '#1976D2',
     text: '#2D3748',
     cardBg: 'rgba(255, 255, 255, 0.95)',
-    border: 'rgba(102, 126, 234, 0.1)',
-    shadow: 'rgba(102, 126, 234, 0.08)',
-    accent: '#667EEA',
-    sidebarBg: 'linear-gradient(180deg, #AEC6E4 0%, #8BB8E8 100%)',
-    sidebarHeader: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)'
+    border: 'rgba(33, 150, 243, 0.1)',
+    shadow: 'rgba(33, 150, 243, 0.08)',
+    accent: '#2196F3',
+    sidebarBg: 'linear-gradient(180deg, #E0F2F7 0%, #D0EEF5 100%)',
+    sidebarHeader: 'linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%)'
   },
   purple: {
     background: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #e9d5ff 100%)',
@@ -186,7 +174,7 @@ const SidebarHeader = styled.div<{ $theme: Theme }>`
   padding: 24px 20px;
   border-bottom: 1px solid ${props => themes[props.$theme].border};
   background: ${props => themes[props.$theme].sidebarHeader};
-  color: white;
+  color: ${props => props.$theme === 'white' ? '#374151' : 'white'};
 `;
 
 const UserAvatar = styled.div`
@@ -230,12 +218,12 @@ const MenuItem = styled.button<{ $theme: Theme }>`
   align-items: center;
   gap: 12px;
   font-size: 0.95rem;
-  color: ${props => themes[props.$theme].text};
+  color: ${props => props.$theme === 'white' ? '#374151' : themes[props.$theme].text};
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => themes[props.$theme].accent}20;
-    color: ${props => themes[props.$theme].primary};
+    background: ${props => props.$theme === 'white' ? '#f3f4f6' : themes[props.$theme].accent}20;
+    color: ${props => props.$theme === 'white' ? '#1f2937' : themes[props.$theme].primary};
   }
 
   &.logout {
@@ -514,7 +502,7 @@ const Dashboard: React.FC = () => {
   const [hasEntry, setHasEntry] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState<Theme>('default');
+  const [currentTheme, setCurrentTheme] = useState<Theme>('white');
 
   // Load all entries on component mount
   useEffect(() => {
@@ -701,10 +689,7 @@ const Dashboard: React.FC = () => {
                        <ThemeSection $theme={currentTheme}>
               <ThemeTitle $theme={currentTheme}>Theme</ThemeTitle>
               <ThemeOptions>
-                <ThemeOption $theme={currentTheme} $isActive={currentTheme === 'default'} onClick={() => setCurrentTheme('default')}>
-                  <ThemeColor color="#6b7280" />
-                  Default
-                </ThemeOption>
+
                 <ThemeOption $theme={currentTheme} $isActive={currentTheme === 'white'} onClick={() => setCurrentTheme('white')}>
                   <ThemeColor color="#6b7280" />
                   White

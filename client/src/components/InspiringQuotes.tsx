@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 // Theme types
-type Theme = 'default' | 'white' | 'green' | 'pink' | 'blue' | 'purple';
+type Theme = 'white' | 'green' | 'pink' | 'blue' | 'purple';
 
 interface QuoteData {
   text: string;
@@ -15,11 +15,6 @@ interface QuoteData {
 
 // Theme configurations for InspiringQuotes - All themes use purple for inspiration section
 const quoteThemes = {
-  default: {
-    background: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
-    shadow: 'rgba(167, 139, 250, 0.15)',
-    border: '#e5e7eb'
-  },
   white: {
     background: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
     shadow: 'rgba(167, 139, 250, 0.15)',
