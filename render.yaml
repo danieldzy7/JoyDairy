@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: joy-dairy-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: joy-dairy-backend
+          property: port
+      - key: MONGODB_URI
+        sync: false # You'll set this manually in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true # Render will generate a secure secret
+    autoDeploy: false

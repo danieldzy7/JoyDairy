@@ -1,10 +1,8 @@
 import axios from 'axios';
+import { getApiBaseUrl } from '../config';
 
 // Set base URL for API calls
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '' 
-  : 'http://localhost:5000';
-
+const API_BASE_URL = getApiBaseUrl();
 axios.defaults.baseURL = API_BASE_URL;
 
 export interface Entry {
