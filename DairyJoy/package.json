@@ -1,0 +1,27 @@
+{
+  "name": "joy-diary",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Joy Diary - 每日三件开心事 · 星座运势 · 中国万年历 · AI 陪聊",
+  "scripts": {
+    "install-all": "npm install && npm install --prefix server && npm install --prefix client",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently -n server,client -c magenta,cyan \"npm run server\" \"npm run client\"",
+    "build": "npm run build --prefix client",
+    "start": "npm start --prefix server",
+    "vercel-build": "npm install --prefix client && npm run build --prefix client"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "lunar-javascript": "^1.7.2",
+    "mongoose": "^8.9.5",
+    "openai": "^4.77.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
