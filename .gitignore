@@ -2,6 +2,9 @@
 node_modules/
 client/node_modules/
 
+# New standalone app (lives in its own repo: danieldzy7/joydairy2)
+DairyJoy/
+
 # Production builds
 client/build/
 
